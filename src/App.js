@@ -1,5 +1,6 @@
-import React, { useState, lazy, Suspense } from 'react';
+import React, {useState } from 'react';
 import './App.css';
+import loadable from '@loadable/component';
 
 
 
@@ -7,16 +8,11 @@ function App() {
   const [visible, setVisible] = useState(false);
 
   // React Component import
-  const SplitMe = lazy(() => import('./components/SplitMe'));
+  const SplitMe = loadable(
+    () => import('./components/SplitMe'), {
+      fallback: <div>loading..</div>
+  });
 
-
-  // Vanilla js import
-  const callGreeting = async () => {
-    const greeting = await import('./util/greenting');
-    greeting.default();
-    alert('1 + 2 => ' + greeting.sum(1, 2));
-    alert('10 - 2 => ' + greeting.minus(10, 2));
-  }
 
   return (
     <div className="App">
@@ -25,11 +21,9 @@ function App() {
         lazy, Suspense 이용하여 codsplit
       </h3>
       <main>
+
         <button onClick={() => setVisible(!visible)}>가시성 조절</button>
-        <button onClick={callGreeting}>call func</button>
-        <Suspense fallback={<div>loading...</div>}>
-          {visible && <SplitMe />}
-        </Suspense>
+        {visible && <SplitMe/>}
       </main>
     </div>
   );
